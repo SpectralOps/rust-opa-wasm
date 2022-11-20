@@ -250,6 +250,7 @@ pub async fn lookup_ip_addr(name: String) -> Result<HashSet<String>> {
     )?;
 
     let response = resolver.lookup_ip(&name).await?;
+
     Ok(response
         .iter()
         .map(|addr| addr.to_string())
