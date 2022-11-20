@@ -54,6 +54,8 @@ route-pattern = { version = "0.1.0", optional = true }
 regex-intersect = { version = "1.2.0", optional = true }
 form_urlencoded = { version = "1.1.0", optional = true }
 urlencoding = { version = "2.1.2", optional = true }
+trust-dns-resolver = { version = "0.22.0", optional = true }
+ipnet = { version = "2.5.1", optional = true }
 
 [dev-dependencies.tokio]
 version = "1.5"
@@ -111,6 +113,7 @@ yaml-builtins = ["dep:serde_yaml"]
 glob-builtins = ["dep:globset"]
 regex-builtins = ["dep:regex", "dep:route-pattern", "dep:regex-intersect"]
 urlquery-builtins = ["dep:form_urlencoded", "dep:urlencoding"]
+net-builtins = ["dep:ipnet", "dep:trust-dns-resolver"]
 
 all-crypto-builtins = [
   "crypto-digest-builtins",
@@ -133,6 +136,7 @@ all-builtins = [
   "glob-builtins",
   "regex-builtins",
   "urlquery-builtins",
+  "net-builtins",
 ]
 
 [[test]]

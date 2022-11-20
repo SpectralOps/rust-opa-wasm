@@ -1,0 +1,67 @@
+---
+source: tests/smoke_test.rs
+assertion_line: 125
+expression: "test_policy(\"test-net\", None).await.expect(\"error in test suite\")"
+---
+- result:
+    cidr_expand_1:
+      - 1.1.0.1
+      - 1.1.0.2
+      - 1.1.0.3
+      - 1.1.0.0
+    cidr_expand_2:
+      - 1.1.0.0
+    cidr_expand_3:
+      - "2002::1234:abcd:ffff:c0a8:101"
+    cidr_expand_4:
+      - "2002::1234:abcd:ffff:c0a8:101"
+      - "2002::1234:abcd:ffff:c0a8:100"
+    cidr_merge_1:
+      - 192.0.128.0/23
+    cidr_merge_2:
+      - "1900::/64"
+    docs_test_1:
+      - - 1.1.1.0/24
+        - 1.1.1.128
+    docs_test_2:
+      - - 0
+        - 1.1.1.128
+    docs_test_3:
+      - - 0
+        - 0
+      - - 0
+        - 1
+    docs_test_4:
+      - - 1
+        - x
+      - - 1
+        - y
+    docs_test_4_1:
+      - - 0
+        - x
+      - - 0
+        - y
+    net_lookup:
+      - 93.184.216.34
+    output_1:
+      - - x
+        - 0
+    output_2:
+      - - 1.1.0.0/16
+        - 1.1.1.128
+    output_3:
+      - - 0
+        - 0
+    output_4:
+      - - 0
+        - 0
+    output_5:
+      - - 0
+        - 0
+    output_6:
+      - - 0
+        - y
+    output_7:
+      - - 0
+        - y
+
