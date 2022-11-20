@@ -19,7 +19,7 @@ use std::{collections::HashSet, net::IpAddr, str::FromStr};
 use anyhow::{bail, Context, Result};
 use ipnet::IpNet;
 use serde_json::Number;
-use trust_dns_resolver::{AsyncResolver, Resolver, TokioAsyncResolver};
+use trust_dns_resolver::TokioAsyncResolver;
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Copy)]
