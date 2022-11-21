@@ -13,6 +13,11 @@
 // limitations under the License.
 
 //! Builtins related to network operations and IP handling
+//!
+//! Note: spec says to return a hashset, but we're returning Vec for order
+//! stability. where it is not inherently unique, we make guarantee that items
+//! are unique as in a hash before converting to a vec. representation on the
+//! result side in OPA is always an array (JSON)
 
 use std::{collections::HashSet, net::IpAddr, str::FromStr};
 
@@ -40,9 +45,9 @@ fn addr_from_cidr_or_ip(s: &str) -> Result<Addr> {
 /// this expand upon the go side handling additional cases where:
 /// ip can contain ip (by way of strict equality)
 /// cidr contains ip, but also ip is contained within cidr (flip the arguments)
-/// * in the Go case, it's assumed that root call of `cidr_contains_matches` LHS
-///   is CIDR and RHS is "CIDR or IP". here by being direction agnosic we make
-///   no such assumption and handle a larger set of cases
+/// * in the Go case, it's assumed thatmut  root call of `cidr_contains_matches`
+///   LHS is CIDR and RHS is "CIDR or IP". here by being direction agnosic we
+///   make no such assumption and handle a larger set of cases
 #[allow(clippy::similar_names)]
 fn addr_contains(left: &Addr, right: &Addr) -> bool {
     match (left, right) {
@@ -197,20 +202,22 @@ pub fn cidr_contains_matches(
 /// generates 4 hosts: `{"192.168.0.0", "192.168.0.1", "192.168.0.2",
 /// "192.168.0.3"}`).
 #[tracing::instrument(name = "net.cidr_expand", err)]
-pub fn cidr_expand(cidr: String) -> Result<HashSet<String>> {
+pub fn cidr_expand(cidr: String) -> Result<Vec<String>> {
     // IpNet.hosts() is too smart because it excludes the
     // broadcast and network IP. which is why we're doing it manually here to
     // include all addresses in range including broadcast and network:
     let mut addrs = match IpNet::from_str(&cidr)? {
         IpNet::V4(net) => ipnet::Ipv4AddrRange::new(net.network(), net.broadcast())
             .map(|addr| addr.to_string())
-            .collect::<Vec<_>>(),
+            .collect::<HashSet<_>>(),
         IpNet::V6(net) => ipnet::Ipv6AddrRange::new(net.network(), net.broadcast())
             .map(|addr| addr.to_string())
-            .collect::<Vec<_>>(),
+            .collect::<HashSet<_>>(),
     };
-    addrs.sort();
-    Ok(addrs.into_iter().collect::<HashSet<_>>())
+    let mut res = addrs.into_iter().collect::<Vec<_>>();
+    res.sort();
+
+    Ok(res)
 }
 
 /// Merges IP addresses and subnets into the smallest possible list of CIDRs
@@ -221,7 +228,7 @@ pub fn cidr_expand(cidr: String) -> Result<HashSet<String>> {
 /// Supports both IPv4 and IPv6 notations. IPv6 inputs need a prefix length
 /// (e.g. "/128").
 #[tracing::instrument(name = "net.cidr_merge", err)]
-pub fn cidr_merge(addrs: serde_json::Value) -> Result<HashSet<String>> {
+pub fn cidr_merge(addrs: serde_json::Value) -> Result<Vec<String>> {
     if let Some(addrs) = addrs.as_array() {
         let ipnets = addrs
             .iter()
@@ -234,7 +241,7 @@ pub fn cidr_merge(addrs: serde_json::Value) -> Result<HashSet<String>> {
         Ok(IpNet::aggregate(&ipnets)
             .iter()
             .map(ToString::to_string)
-            .collect::<HashSet<_>>())
+            .collect::<Vec<_>>())
     } else {
         bail!("data type not supported: {}", addrs);
     }
@@ -243,7 +250,7 @@ pub fn cidr_merge(addrs: serde_json::Value) -> Result<HashSet<String>> {
 /// Returns the set of IP addresses (both v4 and v6) that the passed-in `name`
 /// resolves to using the standard name resolution mechanisms available.
 #[tracing::instrument(name = "net.lookup_ip_addr", err)]
-pub async fn lookup_ip_addr(name: String) -> Result<HashSet<String>> {
+pub async fn lookup_ip_addr(name: String) -> Result<Vec<String>> {
     let resolver = TokioAsyncResolver::tokio(
         trust_dns_resolver::config::ResolverConfig::default(),
         trust_dns_resolver::config::ResolverOpts::default(),
@@ -254,5 +261,5 @@ pub async fn lookup_ip_addr(name: String) -> Result<HashSet<String>> {
     Ok(response
         .iter()
         .map(|addr| addr.to_string())
-        .collect::<HashSet<_>>())
+        .collect::<Vec<_>>())
 }
