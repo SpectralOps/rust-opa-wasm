@@ -148,8 +148,6 @@ pub fn cidr_contains_matches(
     cidrs: serde_json::Value,
     cidrs_or_ips: serde_json::Value,
 ) -> Result<serde_json::Value> {
-    println!("lhs: {:?}, rhs: {:?}", cidrs, cidrs_or_ips);
-
     let res = if let Some(s) = cidrs.as_str() {
         match_any(
             &addr_from_cidr_or_ip(s)?,
@@ -203,14 +201,16 @@ pub fn cidr_expand(cidr: String) -> Result<HashSet<String>> {
     // IpNet.hosts() is too smart because it excludes the
     // broadcast and network IP. which is why we're doing it manually here to
     // include all addresses in range including broadcast and network:
-    Ok(match IpNet::from_str(&cidr)? {
+    let mut addrs = match IpNet::from_str(&cidr)? {
         IpNet::V4(net) => ipnet::Ipv4AddrRange::new(net.network(), net.broadcast())
             .map(|addr| addr.to_string())
-            .collect::<HashSet<_>>(),
+            .collect::<Vec<_>>(),
         IpNet::V6(net) => ipnet::Ipv6AddrRange::new(net.network(), net.broadcast())
             .map(|addr| addr.to_string())
-            .collect::<HashSet<_>>(),
-    })
+            .collect::<Vec<_>>(),
+    };
+    addrs.sort();
+    Ok(addrs.into_iter().collect::<HashSet<_>>())
 }
 
 /// Merges IP addresses and subnets into the smallest possible list of CIDRs
