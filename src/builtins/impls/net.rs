@@ -26,6 +26,7 @@ use ipnet::IpNet;
 use serde_json::Number;
 use trust_dns_resolver::TokioAsyncResolver;
 
+/// A unified address or CIDR block type
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Copy)]
 enum Addr {
