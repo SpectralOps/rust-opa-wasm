@@ -105,10 +105,15 @@ pub fn resolve<C: EvaluationContext>(name: &str) -> Result<Box<dyn Builtin<C>>> 
         #[cfg(feature = "json-builtins")]
         "json.patch" => Ok(self::impls::json::patch.wrap()),
 
+        #[cfg(feature = "net-builtins")]
         "net.cidr_contains_matches" => Ok(self::impls::net::cidr_contains_matches.wrap()),
+        #[cfg(feature = "net-builtins")]
         "net.cidr_expand" => Ok(self::impls::net::cidr_expand.wrap()),
+        #[cfg(feature = "net-builtins")]
         "net.cidr_merge" => Ok(self::impls::net::cidr_merge.wrap()),
+        #[cfg(feature = "net-builtins")]
         "net.lookup_ip_addr" => Ok(self::impls::net::lookup_ip_addr.wrap()),
+
         "object.union_n" => Ok(self::impls::object::union_n.wrap()),
         "opa.runtime" => Ok(self::impls::opa::runtime.wrap()),
 

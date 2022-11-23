@@ -122,6 +122,7 @@ integration_test!(test_yaml, "test-yaml");
 integration_test!(test_glob, "test-glob");
 integration_test!(test_regex, "test-regex");
 integration_test!(test_urlquery, "test-urlquery");
+integration_test!(test_net, "test-net");
 
 /*
 #[tokio::test]

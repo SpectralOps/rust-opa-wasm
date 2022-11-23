@@ -33,7 +33,9 @@ pub mod http;
 pub mod io;
 #[cfg(feature = "json-builtins")]
 pub mod json;
+#[cfg(feature = "net-builtins")]
 pub mod net;
+
 pub mod object;
 pub mod opa;
 #[cfg(feature = "rng")]
