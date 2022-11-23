@@ -206,7 +206,7 @@ pub fn cidr_expand(cidr: String) -> Result<Vec<String>> {
     // IpNet.hosts() is too smart because it excludes the
     // broadcast and network IP. which is why we're doing it manually here to
     // include all addresses in range including broadcast and network:
-    let mut addrs = match IpNet::from_str(&cidr)? {
+    let addrs = match IpNet::from_str(&cidr)? {
         IpNet::V4(net) => ipnet::Ipv4AddrRange::new(net.network(), net.broadcast())
             .map(|addr| addr.to_string())
             .collect::<HashSet<_>>(),
