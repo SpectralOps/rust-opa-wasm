@@ -125,6 +125,9 @@ integration_test!(test_urlquery, "test-urlquery");
 integration_test!(test_time, "test-time");
 integration_test!(test_object, "test-object");
 
+#[cfg(feature = "extra-builtins")]
+integration_test!(test_extras, "test-extras");
+
 /*
 #[tokio::test]
 async fn test_uuid() {
