@@ -118,7 +118,7 @@ regex-builtins = ["dep:regex", "dep:route-pattern", "dep:regex-intersect"]
 urlquery-builtins = ["dep:form_urlencoded", "dep:urlencoding"]
 time-builtins = ["time", "dep:chrono-tz", "dep:duration-str", "dep:chronoutil"]
 object-builtins = []
-extras = []
+extras-builtins = []
 
 all-crypto-builtins = [
   "crypto-digest-builtins",

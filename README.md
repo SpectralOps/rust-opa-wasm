@@ -89,21 +89,21 @@ To use these extra builtins:
 1. Build WASM with the custom [opa-caps.json](opa-caps.json) file, which includes the added function signatures:
 
 
-```
+```bash
 $ opa build policy.rego -t wasm --capabilities opa-caps.json -e ENTRY -o bundle.tar.gz
 ```
 
-To include _extras_ in your SDK, add the `extras` feature:
+To include _extra-builtins_ in your SDK, add the `extra-builtins` feature:
 
 ```toml
 opa-wasm = { version = "*", features = [
   "all-builtins",
-  "extras",
+  "extra-builtins",
 ] }
 ```
 
 Or via building:
 
-```
-cargo build --features all-builtins,extras
+```bash
+$ cargo build --features all-builtins,extra-builtins
 ```

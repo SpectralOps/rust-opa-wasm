@@ -4,7 +4,7 @@
 # extras, are a bunch of BIFs that does not exist in the Go impl. but do exist in this Rust SDK.
 # because we're building to WASM, it's possible to have BIFs that were never implemented in Go.
 # all is needed is a custom capabilities.json file while building to WASM with the `opa` CLI,
-# and to then implmenet these BIFs in Rust, and map them correctly to the `extras` feature.
+# and to then implmenet these BIFs in Rust, and map them correctly to the `extra-builtins` feature.
 #
 # Below are two ways to build AND test:
 #
@@ -42,7 +42,7 @@ test-core:
 	ls tests/infra-fixtures/*.rego | grep -v extras | xargs -I {} opa build {} -t wasm -e test -o {}.tar.gz
 	cargo test --features all-builtins,loader
 
-# coverage includes 'extras' (--all-features)
+# coverage includes 'extra-builtins' (--all-features)
 test-cover:
 	ls tests/infra-fixtures/*.rego | xargs -I {} opa build {} -t wasm --capabilities opa-caps.json -e test -o {}.tar.gz
 	cargo test --all-features --no-fail-fast --tests
